@@ -10,7 +10,7 @@
 import UIKit
 
 class MainViewController:UIViewController,DrawerMenuControllerDelegate{
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -22,7 +22,7 @@ class MainViewController:UIViewController,DrawerMenuControllerDelegate{
         leftBtn.setTitle("leftBtn", forState: UIControlState.Normal)
         leftBtn.setTitle("leftBtn", forState: UIControlState.Highlighted)
         
-
+        
         var rightBtn:UIButton = UIButton(frame: CGRectMake(self.view.frame.size.width-65,0, 65, 40))
         rightBtn.addTarget(self, action: "rightItemClick", forControlEvents: UIControlEvents.TouchUpInside)
         self.view.addSubview(rightBtn)
@@ -50,7 +50,7 @@ class MainViewController:UIViewController,DrawerMenuControllerDelegate{
         button.setTitleColor(UIColor.whiteColor(), forState: UIControlState.Highlighted)
         button.setTitle("back  ", forState: UIControlState.Normal)
         button.setTitle("back  ", forState: UIControlState.Highlighted)
-
+        
         
         
         // Do any additional setup after loading the view, typically from a nib.
@@ -59,7 +59,7 @@ class MainViewController:UIViewController,DrawerMenuControllerDelegate{
     //DrawerMenuControllerDelegate
     func CustomlayoutViewWithOffset(xoffset: CGFloat, menuController: DrawerMenuController) {
         println(xoffset)
-         menuController.mainCurrentViewWithOffset(xoffset)
+        menuController.mainCurrentViewWithOffset(xoffset)
         if xoffset > 0 {
             menuController.leftSideView!.frame = CGRectMake( ( -menuController.leftSideView!.frame.size.width + xoffset +  xoffset / menuController.leftViewShowWidth * ( menuController.leftSideView!.frame.size.width - xoffset) ) , 0, menuController.leftSideView!.frame.size.width, menuController.leftSideView!.frame.size.height)
             menuController.leftSideView!.alpha = xoffset/menuController.leftViewShowWidth
@@ -71,8 +71,8 @@ class MainViewController:UIViewController,DrawerMenuControllerDelegate{
     func leftItemClick(){
         
         
-      (UIApplication.sharedApplication().delegate as AppDelegate).menuController?.showLeftViewController(true)
-    
+        (UIApplication.sharedApplication().delegate as AppDelegate).menuController?.showLeftViewController(true)
+        
     }
     
     func rightItemClick(){
@@ -88,9 +88,10 @@ class MainViewController:UIViewController,DrawerMenuControllerDelegate{
     func back(sender:UIButton){
         var mainViewController = RootViewController(nibName:nil,  bundle: nil)
         var navigationViewController = UINavigationController(rootViewController: mainViewController)
-        UIApplication.sharedApplication().delegate.window!.rootViewController = navigationViewController
+        
+        (UIApplication.sharedApplication().delegate as AppDelegate).window!.rootViewController = navigationViewController
         
     }
-
+    
     
 }

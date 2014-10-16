@@ -20,41 +20,41 @@ enum MenuDirection {
 @objc protocol DrawerMenuControllerDelegate : NSObjectProtocol {
     
     //滑动变化
-    @optional func CustomlayoutViewWithOffset(xoffset:CGFloat,menuController:DrawerMenuController)
+    optional func CustomlayoutViewWithOffset(xoffset:CGFloat,menuController:DrawerMenuController)
 }
 
 
 
 class DrawerMenuController: UIViewController ,UIGestureRecognizerDelegate {
-     var delegate:DrawerMenuControllerDelegate?
+    var delegate:DrawerMenuControllerDelegate?
     
     
     //是否边界影子
     var showBoundsShadow:Bool =  true {
-    willSet{
+        willSet{
+            
+        }
+        didSet{
+            
+        }
         
-    }
-    didSet{
-        
-    }
-    
     }
     
     //是否能滑动
     var needSwipeShowMenu:Bool = true
-    
-    {
-    willSet{
         
-    }
-    didSet{
-        if needSwipeShowMenu{
-            self.view.addGestureRecognizer(movePan)
-        }else{
-            self.view.removeGestureRecognizer(movePan)
+        {
+        willSet{
+            
         }
-    }
-    
+        didSet{
+            if needSwipeShowMenu{
+                self.view.addGestureRecognizer(movePan!)
+            }else{
+                self.view.removeGestureRecognizer(movePan!)
+            }
+        }
+        
     }
     
     var minScale:CGFloat = 0.8                  //root 最小缩放
@@ -89,60 +89,66 @@ class DrawerMenuController: UIViewController ,UIGestureRecognizerDelegate {
     var blackCoverView:UIView?
     
     var rootViewController:UIViewController?{
-    willSet{
-        if newValue {
-            rootViewController?.removeFromParentViewController()
-            rootViewController?.view.removeFromSuperview();
+        willSet{
+            if (newValue != nil) {
+                rootViewController?.removeFromParentViewController()
+                rootViewController?.view.removeFromSuperview();
+            }
         }
-    }
-    didSet{
-        if rootViewController{
-            self.addChildViewController(rootViewController)
-            var frame:CGRect = CGRectZero
-            var transform:CGAffineTransform  = CGAffineTransformIdentity
-            frame = self.view.bounds;
-            mainContentView!.addSubview(rootViewController!.view)
-            mainContentView!.sendSubviewToBack(rootViewController!.view)
-            rootViewController!.view!.transform =  transform
-            rootViewController!.view!.frame = frame
-            if leftViewController?.view.superview || rightViewController?.view.superview {
-                self.showShadow(showBoundsShadow)
+        didSet{
+            if (rootViewController != nil){
+                self.addChildViewController(rootViewController!)
+                var frame:CGRect = CGRectZero
+                var transform:CGAffineTransform  = CGAffineTransformIdentity
+                frame = self.view.bounds;
+                mainContentView!.addSubview(rootViewController!.view)
+                mainContentView!.sendSubviewToBack(rootViewController!.view)
+                rootViewController!.view.transform =  transform
+                rootViewController!.view.frame = frame
+                if (leftViewController?.view.subviews != nil)  {
+                    self.showShadow(showBoundsShadow)
+                    
+                }else if (rightViewController?.view.subviews != nil)  {
+                    
+                    self.showShadow(showBoundsShadow)
+                }
+                
             }
         }
     }
-    }
     
     var leftViewController:UIViewController?{
-    willSet{
-        if newValue {
-            leftViewController?.removeFromParentViewController()
-            leftViewController?.view.removeFromSuperview();
+        willSet{
+            if (newValue) != nil {
+                
+                leftViewController?.removeFromParentViewController()
+                leftViewController?.view.removeFromSuperview();
+            }
+            
         }
-        
-    }
-    didSet{
-        if leftViewController{
-            self.addChildViewController(leftViewController)
-            leftViewController!.view.frame = CGRectMake(0, 0, leftViewController!.view.frame.size.width,  leftViewController!.view.frame.size.height)
-            leftSideView!.addSubview(leftViewController!.view)
+        didSet{
+            if (leftViewController != nil){
+                self.addChildViewController(leftViewController!)
+                leftViewController!.view.frame = CGRectMake(0, 0, leftViewController!.view.frame.size.width,  leftViewController!.view.frame.size.height)
+                leftSideView!.addSubview(leftViewController!.view)
+            }
         }
-    }
     }
     
     var rightViewController:UIViewController?{
-    willSet{
-        if newValue {
-            rightViewController?.removeFromParentViewController()
-            rightViewController?.view.removeFromSuperview();
+        willSet{
+            if (newValue != nil) {
+                rightViewController?.removeFromParentViewController()
+                rightViewController?.view.removeFromSuperview();
+            }
         }
-    }
-    didSet{
-        if rightViewController{
-            self.addChildViewController(rightViewController)
-            rightViewController!.view.frame = CGRectMake(0, 0, rightViewController!.view.frame.size.width,  rightViewController!.view.frame.size.height)
-            rightSideView!.addSubview(rightViewController!.view)
+        didSet{
+            if (rightViewController != nil){
+                self.addChildViewController(rightViewController!)
+                rightViewController!.view.frame = CGRectMake(0, 0, rightViewController!.view.frame.size.width,  rightViewController!.view.frame.size.height)
+                rightSideView!.addSubview(rightViewController!.view)
+            }
         }
-    }
     }
     
     func showShadow(show: Bool)
@@ -165,21 +171,21 @@ class DrawerMenuController: UIViewController ,UIGestureRecognizerDelegate {
         //滑动手势
         movePan = UIPanGestureRecognizer(target: self, action: "moveViewWithGesture:")
         movePan!.delegate  = self
-        mainContentView!.addGestureRecognizer(movePan)
-      
+        mainContentView!.addGestureRecognizer(movePan!)
+        
         
         
         blackTapPan = UITapGestureRecognizer(target: self, action: "handleSingleFingerEvent:")
         blackTapPan!.numberOfTouchesRequired = 1; //手指数
         blackTapPan!.numberOfTapsRequired = 1; //tap次数
         blackTapPan!.delegate = self
-        blackCoverView!.addGestureRecognizer(blackTapPan)
+        blackCoverView!.addGestureRecognizer(blackTapPan!)
         blackTapPan!.enabled = false
-       
+        
         
         blackCoverPan = UIPanGestureRecognizer(target: self, action: "blackCoverGesture:")
         blackCoverPan!.delegate  = self
-        blackCoverView!.addGestureRecognizer(blackCoverPan)
+        blackCoverView!.addGestureRecognizer(blackCoverPan!)
         blackCoverPan!.enabled = false
         
         
@@ -192,13 +198,13 @@ class DrawerMenuController: UIViewController ,UIGestureRecognizerDelegate {
     
     func initSubviews(){
         leftSideView = UIView(frame: self.view.bounds)
-        self.view.addSubview(leftSideView)
+        self.view.addSubview(leftSideView!)
         rightSideView = UIView(frame: self.view.bounds)
-         self.view.addSubview(rightSideView)
+        self.view.addSubview(rightSideView!)
         mainContentView = UIView(frame: self.view.bounds)
-        self.view.addSubview(mainContentView)
-         blackCoverView = UIView(frame: self.view.bounds)
-        mainContentView!.addSubview(blackCoverView)
+        self.view.addSubview(mainContentView!)
+        blackCoverView = UIView(frame: self.view.bounds)
+        mainContentView!.addSubview(blackCoverView!)
         blackCoverView!.backgroundColor = UIColor.blackColor()
         blackCoverView!.alpha = 0
         blackCoverView!.hidden = true
@@ -217,18 +223,18 @@ class DrawerMenuController: UIViewController ,UIGestureRecognizerDelegate {
         rightSideView!.hidden = false
         leftSideView!.hidden = true
         self.view.sendSubviewToBack(leftSideView!)
-         blackCoverView!.hidden = false
+        blackCoverView!.hidden = false
     }
     
-  
+    
     func handleSingleFingerEvent(sender:UITapGestureRecognizer ){
-         self.hideSideViewController(true)
+        self.hideSideViewController(true)
     }
     
     func blackCoverGesture(sender: UIPanGestureRecognizer){
         if blackCoverPan!.state == UIGestureRecognizerState.Began {
-        
-        
+            
+            
         }else if blackCoverPan!.state == UIGestureRecognizerState.Ended {
             
             
@@ -253,11 +259,11 @@ class DrawerMenuController: UIViewController ,UIGestureRecognizerDelegate {
             if mainContentView!.frame.origin.x == 0 {
                 self.showShadow(showBoundsShadow)
             }
-        } 
+        }
         var currentPostion = movePan!.translationInView(self.view)
         var xoffset:CGFloat = startPanPoint.x + currentPostion.x
         if xoffset > 0 {
-            if leftViewController {
+            if (leftViewController != nil) {
                 if !panLeft {
                     panLeft = true
                     self.willShowLeftViewController()
@@ -271,12 +277,12 @@ class DrawerMenuController: UIViewController ,UIGestureRecognizerDelegate {
                 }else {
                     self.layoutCurrentViewWithOffset(leftViewShowWidth < xoffset ? leftViewShowWidth : xoffset)
                 }
-               
+                
             }
             
             
         }else if xoffset < 0{
-            if rightViewController {
+            if (rightViewController != nil) {
                 if !panRight {
                     panRight = true
                     self.willShowRightViewController()
@@ -316,7 +322,7 @@ class DrawerMenuController: UIViewController ,UIGestureRecognizerDelegate {
     }
     
     func showLeftViewController(animated:Bool){
-        if ( !leftViewController) {
+        if (leftViewController == nil) {
             return;
         }
         menuDirection = MenuDirection.leftMenu
@@ -331,7 +337,7 @@ class DrawerMenuController: UIViewController ,UIGestureRecognizerDelegate {
         isInAnimation = true
         self.showAnimationEffects(animatedTime, ShowWidth: self.leftViewShowWidth,{  (finish:Bool) -> Void in
             self.isInAnimation = false
-            })
+        })
     }
     
     func showAnimationEffects(animatedTime:NSTimeInterval,ShowWidth:CGFloat, pletion:(finish:Bool)->Void){
@@ -344,7 +350,7 @@ class DrawerMenuController: UIViewController ,UIGestureRecognizerDelegate {
                     (finish:Bool) -> Void in
                     self.isInAnimation = false
                     pletion(finish: finish)
-                })
+            })
             
         }else {
             UIView.setAnimationCurve(UIViewAnimationCurve.EaseInOut)
@@ -357,14 +363,14 @@ class DrawerMenuController: UIViewController ,UIGestureRecognizerDelegate {
                     if  finish{
                         pletion(finish: finish)
                     }
-                })
+            })
             
         }
         
     }
     
     func showRightViewController(animated:Bool){
-        if ( !rightViewController) {
+        if (rightViewController == nil) {
             return;
         }
         menuDirection = MenuDirection.rightMenu
@@ -374,12 +380,12 @@ class DrawerMenuController: UIViewController ,UIGestureRecognizerDelegate {
             animatedTime = Double(abs(rightViewShowWidth + mainContentView!.frame.origin.x) / rightViewShowWidth * directionAnimationDuration)
             
         }
-         blackTapPan!.enabled = true
+        blackTapPan!.enabled = true
         blackCoverPan!.enabled = true
         isInAnimation = true
         self.showAnimationEffects(animatedTime, ShowWidth: -self.rightViewShowWidth,{  (finish:Bool) -> Void in
             self.isInAnimation = false
-            })
+        })
     }
     
     
@@ -402,18 +408,18 @@ class DrawerMenuController: UIViewController ,UIGestureRecognizerDelegate {
                 self.rightSideView!.hidden = true
                 self.leftSideView!.hidden = true
             }
-            })
-     }
+        })
+    }
     
     
     func layoutCurrentViewWithOffset(xoffset:CGFloat){
         
-        if  delegate?.CustomlayoutViewWithOffset? {
+        if  (delegate?.CustomlayoutViewWithOffset? != nil) {
             delegate?.CustomlayoutViewWithOffset?(xoffset,menuController: self)
             return
         }
         self.mainCurrentViewWithOffset(xoffset)
-       
+        
     }
     
     func mainCurrentViewWithOffset(xoffset:CGFloat){

@@ -11,20 +11,20 @@ import QuartzCore
 //自定义 侧滑
 //
 class CustomMenuController: DrawerMenuController {
-
+    
     //
     override func layoutCurrentViewWithOffset(xoffset: CGFloat) {
         super.layoutCurrentViewWithOffset(xoffset)
         if xoffset > 0 {
-        leftSideView!.frame = CGRectMake( ( -leftSideView!.frame.size.width + xoffset +  xoffset / self.leftViewShowWidth * ( leftSideView!.frame.size.width - xoffset) ) , 0, leftSideView!.frame.size.width, leftSideView!.frame.size.height)
+            leftSideView!.frame = CGRectMake( ( -leftSideView!.frame.size.width + xoffset +  xoffset / self.leftViewShowWidth * ( leftSideView!.frame.size.width - xoffset) ) , 0, leftSideView!.frame.size.width, leftSideView!.frame.size.height)
             leftSideView!.alpha = xoffset/self.leftViewShowWidth
         }
     }
-  
+    
     override func showLeftViewController(animated: Bool) {
         
         super.showLeftViewController(true)
- 
+        
     }
     
     override func showRightViewController(animated: Bool) {
@@ -45,13 +45,13 @@ class CustomMenuController: DrawerMenuController {
             }, completion: {
                 (finish:Bool) -> Void in
                 self.close()
-            })
+        })
         
         
         //super.hideSideViewController(true)
-    
+        
     }
- 
+    
     func close(){
         super.hideSideViewController(true)
     }
